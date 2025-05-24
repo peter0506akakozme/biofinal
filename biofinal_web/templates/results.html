@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data.name }} 分析結果{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="protein-header">
+        <h1>{{ data.name }} <span class="protein-id">{{ protein_id }}</span></h1>
+        <div class="protein-meta">
+            <span class="badge"><i class="fas fa-dna"></i> 長度: {{ data.length }} aa</span>
+            <span class="badge"><i class="fas fa-atom"></i> PDB: {{ data.pdb_id }}</span>
+            <span class="badge"><i class="fas fa-dna"></i> 物種: {{ data.species }}</span>
+        </div>
+    </div>
+
+    <div class="visualization-grid">
+        <div class="molecule-viewer">
+            <div class="loading-animation">
+                <div class="helix-animation"></div>
+                <p>分子3D模型加載中...</p>
+            </div>
+        </div>
+        
+        <div class="sequence-card">
+            <h3><i class="fas fa-code"></i> 氨基酸序列</h3>
+            <div class="sequence-display code-font">
+                {{ data.sequence }}
+            </div>
+            <button class="copy-button">
+                <i class="far fa-copy"></i> 複製序列
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
