@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data.name }} 分析結果{% endblock %}
+
+{% block extra_js %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 下載CSV按鈕
+    document.getElementById('download-btn').addEventListener('click', function() {
+        window.location.href = `/download_csv/{{ protein_id }}`;
+    });
+    
+    // 郵件發送表單處理
+    const emailForm = document.getElementById('email-form');
+    emailForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const submitBtn = document.getElementById('send-btn');
+        const statusMsg = document.getElementById('email-status');
+        
+        submitBtn.disabled = true;
+        statusMsg.textContent = '發送中...';
+        statusMsg.className = 'alert alert-info';
+        
+        fetch('/send_email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                protein_id: '{{ protein_id }}',
+                email: email
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                statusMsg.textContent = '郵件已成功發送！';
+                statusMsg.className = 'alert alert-success';
+                emailForm.reset();
+            } else {
+                statusMsg.textContent = '錯誤: ' + data.message;
+                statusMsg.className = 'alert alert-danger';
+            }
+        })
+        .catch(error => {
+            statusMsg.textContent = '發送失敗: ' + error;
+            statusMsg.className = 'alert alert-danger';
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="protein-header">
+        <h1>{{ data.name }} <span class="protein-id">{{ protein_id }}</span></h1>
+        <div class="protein-meta">
+            <span class="badge"><i class="fas fa-dna"></i> 長度: {{ data.length }} aa</span>
+            <span class="badge"><i class="fas fa-atom"></i> PDB: {{ data.pdb_id }}</span>
+            <span class="badge"><i class="fas fa-dna"></i> 物種: {{ data.species }}</span>
+        </div>
+        
+        <!-- 新增操作按鈕 -->
+        <div class="protein-actions mt-4">
+            <button id="download-btn" class="btn btn-primary me-2">
+                <i class="fas fa-download"></i> 下載CSV
+            </button>
+            
+            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#emailModal">
+                <i class="fas fa-envelope"></i> 郵件發送
+            </button>
+        </div>
+    </div>
+
+    <div class="visualization-grid">
+        <div class="molecule-viewer">
+            <div class="loading-animation">
+                <div class="helix-animation"></div>
+                <p>分子3D模型加載中...</p>
+            </div>
+        </div>
+        
+        <div class="sequence-card">
+            <h3><i class="fas fa-code"></i> 氨基酸序列</h3>
+            <div class="sequence-display code-font">
+                {{ data.sequence }}
+            </div>
+            <button class="copy-button">
+                <i class="far fa-copy"></i> 複製序列
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 郵件發送模態框 -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">發送分析結果</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="email-form">
+                <div class="modal-body">
+                    <p>請輸入接收分析結果的電子郵件地址：</p>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">電子郵件</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    
+                    <div id="email-status"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" id="send-btn" class="btn btn-primary">發送</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
