@@ -6,6 +6,9 @@ from flask_mail import Mail, Message
 import os
 from dotenv import load_dotenv
 from Bio import SeqIO
+import joblib
+from utils import extract_aac_features  # 請換成你的實際模組
+import hashlib
 
 # 載入環境變數
 load_dotenv()
@@ -22,6 +25,10 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_DEBUG'] = True
 
 mail = Mail(app)
+
+# 載入模型與編碼器
+model = joblib.load("svm_model_AAC.pkl")
+label_encoder = joblib.load("label_encoder_AAC.pkl")
 
 # 模擬數據庫
 protein_db = {
@@ -47,72 +54,75 @@ def home():
 
 @app.route('/search', methods=['POST'])
 def search():
-    # 檢查當前激活的輸入方式（通過檢查哪個字段有值）
+
+    def predict_family(seq):
+        features = extract_aac_features(seq)
+        prediction = model.predict([features])[0]
+        return label_encoder.inverse_transform([prediction])[0]
+
+    # 檢查是否為檔案上傳
     if 'fasta_file' in request.files and request.files['fasta_file'].filename != '':
-        # 處理FASTA上傳
         fasta_file = request.files['fasta_file']
         try:
             content = fasta_file.read().decode('utf-8')
             fasta_io = io.StringIO(content)
             records = list(SeqIO.parse(fasta_io, "fasta"))
-            
+
             if not records:
                 return render_template('index.html', error="FASTA檔案中沒有找到有效的序列")
             
             first_record = records[0]
-            sequence = str(first_record.seq)
-            
+            sequence = str(first_record.seq).upper()
+            family = predict_family(sequence)
+
             temp_id = "UPLOAD_" + str(abs(hash(sequence)))[:8]
             protein_db[temp_id] = {
                 "name": first_record.description[:50],
                 "sequence": sequence,
-                "pdb_id": "N/A",
+                "pdb_id": family,  # ✅ 用預測家族取代 pdb_id
                 "length": len(sequence),
                 "species": "Uploaded sequence"
             }
-            
+
             return render_template('results.html', 
-                               protein_id=temp_id,
-                               data=protein_db[temp_id])
-            
+                                   protein_id=temp_id,
+                                   data=protein_db[temp_id])
+
         except Exception as e:
-            return render_template('index.html', 
-                                error=f"處理FASTA檔案時發生錯誤: {str(e)}")
-    
+            return render_template('index.html', error=f"處理FASTA檔案時發生錯誤: {str(e)}")
+
+    # 檢查是否為文字輸入
     elif 'query' in request.form and request.form['query'].strip():
-        # 處理直接輸入
-        query = request.form['query'].strip()
-        
-        # 判斷是UniProt ID還是序列
-        if re.match(r'^[A-Z0-9]{6,10}$', query.upper()):
+        query = request.form['query'].strip().upper()
+
+        if re.match(r'^[A-Z0-9]{6,10}$', query):
             # UniProt ID
-            if query.upper() in protein_db:
-                return render_template('results.html', 
-                                   protein_id=query.upper(),
-                                   data=protein_db[query.upper()])
+            if query in protein_db:
+                return render_template('results.html',
+                                       protein_id=query,
+                                       data=protein_db[query])
             else:
-                return render_template('index.html', 
-                                    error=f"未找到 {query} 的記錄")
-        elif re.match(r'^[ACDEFGHIKLMNPQRSTVWY]+$', query.upper()):
+                return render_template('index.html', error=f"未找到 {query} 的記錄")
+        elif re.match(r'^[ACDEFGHIKLMNPQRSTVWY]+$', query):
             # 蛋白質序列
+            family = predict_family(query)
+
             temp_id = "SEQ_" + str(abs(hash(query)))[:8]
             protein_db[temp_id] = {
                 "name": "User provided sequence",
-                "sequence": query.upper(),
-                "pdb_id": "N/A",
+                "sequence": query,
+                "pdb_id": family,  # ✅ 用預測家族取代 pdb_id
                 "length": len(query),
                 "species": "Unknown"
             }
-            return render_template('results.html', 
-                               protein_id=temp_id,
-                               data=protein_db[temp_id])
+
+            return render_template('results.html',
+                                   protein_id=temp_id,
+                                   data=protein_db[temp_id])
         else:
-            return render_template('index.html', 
-                                error="無效的輸入，請輸入有效的UniProt ID或蛋白質序列")
-    
-    # 如果兩種輸入方式都沒有提供數據
-    return render_template('index.html', 
-                        error="請選擇一種輸入方式並提供數據")
+            return render_template('index.html', error="無效的輸入，請輸入有效的UniProt ID或蛋白質序列")
+
+    return render_template('index.html', error="請選擇一種輸入方式並提供數據")
 
 def generate_csv(protein_id, protein_data):
     """生成CSV文件的函數"""

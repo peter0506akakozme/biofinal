@@ -1,0 +1,170 @@
+
+/* 結果頁面主容器 */
+.result-container {
+max-width: 1200px;
+margin: 2rem auto;
+padding: 2rem;
+background-color: white;
+border-radius: 12px;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 蛋白質標頭區域 */
+.protein-header {
+margin-bottom: 2rem;
+padding-bottom: 1.5rem;
+border-bottom: 2px solid #f0f2f7;
+}
+
+.protein-header h1 {
+color: #1a1a2e;
+font-size: 2rem;
+margin-bottom: 1rem;
+}
+
+.protein-id {
+font-family: 'Roboto Mono', monospace;
+color: #3a86ff;
+font-size: 1.5rem;
+}
+
+.protein-meta {
+display: flex;
+gap: 1rem;
+flex-wrap: wrap;
+}
+
+.badge {
+background-color: #151616;
+padding: 0.5rem 1rem;
+border-radius: 20px;
+font-size: 0.9rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.badge i {
+color: #3a86ff;
+}
+
+/* 可視化網格佈局 */
+.visualization-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 2rem;
+margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+.visualization-grid {
+grid-template-columns: 1fr;
+}
+}
+
+/* 分子查看器 */
+.molecule-viewer {
+background-color: #f8f9fa;
+border-radius: 8px;
+padding: 2rem;
+min-height: 400px;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+}
+
+.loading-animation {
+text-align: center;
+}
+
+.helix-animation {
+width: 80px;
+height: 80px;
+margin: 0 auto 1rem;
+background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L70 30 L50 50 L70 70 L50 90' stroke='%233a86ff' stroke-width='4' fill='none'/%3E%3C/svg%3E") no-repeat center;
+animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+/* 序列卡片 */
+.sequence-card {
+background-color: #f8f9fa;
+border-radius: 8px;
+padding: 2rem;
+}
+
+.sequence-card h3 {
+color: #1a1a2e;
+margin-bottom: 1.5rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.sequence-display {
+background-color: white;
+padding: 1.5rem;
+border-radius: 8px;
+font-family: 'Roboto Mono', monospace;
+font-size: 0.9rem;
+line-height: 1.6;
+max-height: 300px;
+overflow-y: auto;
+margin-bottom: 1.5rem;
+border: 1px solid #e0e3e7;
+}
+
+.copy-button {
+background-color: #3a86ff;
+color: white;
+border: none;
+padding: 0.75rem 1.5rem;
+border-radius: 6px;
+cursor: pointer;
+transition: background-color 0.3s;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+margin-top: 1rem;
+}
+
+.copy-button:hover {
+background-color: #2a66cc;
+}
+
+/* 郵件模態框樣式 */
+.modal-header {
+background-color: #3a86ff;
+color: white;
+}
+
+#email-status {
+padding: 0.75rem;
+border-radius: 6px;
+margin-top: 1rem;
+display: none;
+}
+
+#email-status.show {
+display: block;
+}
+
+.alert-info {
+background-color: #e7f1ff;
+color: #0a58ca;
+}
+
+.alert-success {
+background-color: #e6ffed;
+color: #2ea44f;
+}
+
+.alert-danger {
+background-color: #ffebee;
+color: #dc3545;
+}

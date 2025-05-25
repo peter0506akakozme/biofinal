@@ -1,0 +1,51 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 下載CSV按鈕
+    document.getElementById('download-btn').addEventListener('click', function() {
+        window.location.href = `/download_csv/{{ protein_id }}`;
+    });
+    
+    // 郵件發送表單處理
+    const emailForm = document.getElementById('email-form');
+    emailForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const submitBtn = document.getElementById('send-btn');
+        const statusMsg = document.getElementById('email-status');
+        
+        submitBtn.disabled = true;
+        statusMsg.textContent = '發送中...';
+        statusMsg.className = 'alert alert-info';
+        
+        fetch('/send_email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                protein_id: '{{ protein_id }}',
+                email: email
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                statusMsg.textContent = '郵件已成功發送！';
+                statusMsg.className = 'alert alert-success';
+                emailForm.reset();
+            } else {
+                statusMsg.textContent = '錯誤: ' + data.message;
+                statusMsg.className = 'alert alert-danger';
+            }
+        })
+        .catch(error => {
+            statusMsg.textContent = '發送失敗: ' + error;
+            statusMsg.className = 'alert alert-danger';
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+        });
+    });
+});
+</script>
