@@ -32,40 +32,37 @@
     <div id="particles-js"></div>
     
     <div class="search-panel">
-        <h2 class="search-title">Efflux Proteins Family Predict</h2>
+        <h2 class="search-title">Efflux Proteins Family Prediction</h2>
         
-        <!-- 輸入方式切換標籤 -->
         <div class="input-method-tabs">
-            <div class="input-method-tab active" data-target="fasta-upload">FASTA上傳</div>
-            <div class="input-method-tab" data-target="direct-input">蛋白質序列輸入</div>
+            <div class="input-method-tab active" data-target="fasta-upload">Upload FASTA</div>
+            <div class="input-method-tab" data-target="direct-input">Enter Protein Sequence</div>
         </div>
         
         <form action="/search" method="POST" enctype="multipart/form-data">
-            <!-- FASTA上傳區域 -->
             <div id="fasta-upload" class="input-method-content active">
                 <div class="file-upload-group">
                     <label for="fasta-file" class="form-label">
-                        <i class="fas fa-file-upload"></i> 上傳FASTA檔案：
+                        <i class="fas fa-file-upload"></i> Upload FASTA File:
                     </label>
                     <input type="file" id="fasta-file" name="fasta_file" accept=".fasta,.fa,.txt" class="form-control" required>
-                    <small class="form-text text-muted">支援標準FASTA格式 (.fasta, .fa, .txt)</small>
+                    <small class="form-text text-muted">Supported formats: .fasta, .fa, .txt</small>
                 </div>
             </div>
             
-            <!-- 直接輸入區域 -->
             <div id="direct-input" class="input-method-content">
                 <div class="search-input-group">
                     <label for="sequence-input" class="form-label">
-                        <i class="fas fa-keyboard"></i> 輸入UniProt ID或蛋白質序列：
+                        <i class="fas fa-keyboard"></i> Enter UniProt ID or Protein Sequence:
                     </label>
                     <input type="text" id="sequence-input" name="query" class="form-control" 
-                           placeholder="例如: P00533 或 MTEITAAMVK...">
+                           placeholder="e.g., P00533 or MTEITAAMVK...">
                 </div>
             </div>
             
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i> 開始分析
+                    <i class="fas fa-search"></i> Start Analysis
                 </button>
             </div>
             
@@ -76,167 +73,145 @@
     </div>
 </section>
 
-<!-- 其他頁面內容 -->
 <div id="members-page" class="page-content" style="display:none;">
     <div class="team-container">
-        <h2 class="team-title"><i class="fas fa-users"></i>分組成員</h2>
+        <h2 class="team-title"><i class="fas fa-users"></i>Team Members</h2>
         
         <div class="team-grid">
-            <!-- 成員卡片 1 -->
             <div class="member-card">
                 <div class="member-header">
                     <div class="member-icon">
                         <i class="fas fa-dna"></i>
                     </div>
-                    <h3>陳冠瑋</h3>
-                    <span class="member-title">1114446</span>
+                    <h3>Chen Guan-Wei</h3>
+                    <span class="member-title">陳冠瑋 1111446</span>
                 </div>
                 <div class="member-bio">
-                    <p>製作網站<br>
-                       <br>
-                       實驗室：結構生物學中心</p>
+                    <p>Responsibility: KNN and CNN Model Training</p>
                 </div>
                 <div class="member-contact">
-                    <i class="fas fa-envelope"></i> peterchiu0506@gmail.com
+                    <i class="fas fa-envelope"></i> s1111446@mail.yzu.edu.tw
                 </div>
             </div>
 
-            <!-- 成員卡片 2 -->
             <div class="member-card">
                 <div class="member-header">
                     <div class="member-icon">
                         <i class="fas fa-atom"></i>
                     </div>
-                    <h3>邱品諺</h3>
-                    <span class="member-title">1113339</span>
+                    <h3>Chiu Pin-Yen</h3>
+                    <span class="member-title">邱品諺 1113339</span>
                 </div>
                 <div class="member-bio">
-                    <p>專長：分子動力學<br>
-                       負責項目：蛋白質摺疊模擬<br>
-                       實驗室：計算生物學組</p>
+                    <p>Responsibility: Website Development</p>
                 </div>
                 <div class="member-contact">
-                    <i class="fas fa-envelope"></i> peterchiu0506@gmail.com
+                    <i class="fas fa-envelope"></i> s1113339@mail.yzu.edu.tw
                 </div>
             </div>
 
-            <!-- 成員卡片 3 -->
             <div class="member-card">
                 <div class="member-header">
                     <div class="member-icon">
                         <i class="fas fa-atom"></i>
                     </div>
-                    <h3>夏尉恩</h3>
-                    <span class="member-title">1113342</span>
+                    <h3>Hsia Wei-En</h3>
+                    <span class="member-title">夏尉恩 1113342</span>
                 </div>
                 <div class="member-bio">
-                    <p>專長：分子動力學<br>
-                       負責項目：蛋白質摺疊模擬<br>
-                       實驗室：計算生物學組</p>
+                    <p>Responsibility: Website Development</p>
                 </div>
                 <div class="member-contact">
-                    <i class="fas fa-phone"></i> +886-2-3366-1234
+                    <i class="fas fa-envelope"></i> s1113342@mail.yzu.edu.tw
                 </div>
             </div>
 
-            <!-- 成員卡片 4 -->
             <div class="member-card">
                 <div class="member-header">
                     <div class="member-icon">
                         <i class="fas fa-atom"></i>
                     </div>
-                    <h3>張鈞博</h3>
-                    <span class="member-title">1111523</span>
+                    <h3>Chang Chun-Po</h3>
+                    <span class="member-title">張鈞博 1111523</span>
                 </div>
                 <div class="member-bio">
-                    <p>專長：分子動力學<br>
-                       負責項目：蛋白質摺疊模擬<br>
-                       實驗室：計算生物學組</p>
+                    <p>Responsibility: PPT Presentation Design</p>
                 </div>
                 <div class="member-contact">
-                    <i class="fas fa-phone"></i> +886-2-3366-1234
+                    <i class="fas fa-envelope"></i> s1111523@mail.yzu.edu.tw
                 </div>
             </div>
 
-            <!-- 成員卡片 5 -->
             <div class="member-card">
                 <div class="member-header">
                     <div class="member-icon">
                         <i class="fas fa-atom"></i>
                     </div>
-                    <h3>黃梓桀</h3>
-                    <span class="member-title">1111526</span>
+                    <h3>Huang Tzu-Chieh</h3>
+                    <span class="member-title">黃梓桀 1111526</span>
                 </div>
                 <div class="member-bio">
-                    <p>專長：分子動力學<br>
-                       負責項目：蛋白質摺疊模擬<br>
-                       實驗室：計算生物學組</p>
+                    <p>Responsibility: SVM Model Training</p>
                 </div>
                 <div class="member-contact">
-                    <i class="fas fa-phone"></i> +886-2-3366-1234
+                    <i class="fas fa-envelope"></i> s1111526@mail.yzu.edu.tw
                 </div>
             </div>
-            </div>
-            <!-- 共計5個member-card -->
         </div>
     </div>
 </div>
 
 <div id="training-page" class="page-content" style="display:none;">
     <div class="training-container">
-        <h2 class="training-title"><i class="fas fa-robot"></i> 模型訓練流程</h2>
+        <h2 class="training-title"><i class="fas fa-robot"></i>Model Training Workflow</h2>
         
-        <!-- 橫向圖文區塊 1 -->
         <div class="training-card">
             <div class="training-text">
-                <h3>1. ACC與DCP分析結果</h3>
-                <p>使用AlphaFold數據集進行特徵工程，包含：</p>
+                <h3>1. ACC and DCP Analysis</h3>
+                <p>Feature engineering with AlphaFold dataset, including:</p>
                 <ul>
-                    <li>蛋白質序列正規化</li>
-                    <li>3D結構網格化</li>
-                    <li>進化資訊嵌入</li>
+                    <li>Protein sequence normalization</li>
+                    <li>3D structure grid mapping</li>
+                    <li>Embedding of evolutionary information</li>
                 </ul>
             </div>
             <div class="training-image">
                 <img src="{{ url_for('static', filename='images/ACCDCP.png') }}" 
-                     alt="數據預處理流程圖" 
+                     alt="Data preprocessing flowchart" 
                      loading="lazy">
             </div>
         </div>
 
-        <!-- 橫向圖文區塊 2 -->
         <div class="training-card reverse">
             <div class="training-text">
-                <h3>2. 模型架構</h3>
-                <p>基於Transformer的混合神經網絡：</p>
+                <h3>2. Model Architecture</h3>
+                <p>Hybrid neural network based on Transformer:</p>
                 <ul>
-                    <li>128層注意力機制</li>
-                    <li>殘差連接結構</li>
-                    <li>幾何特徵提取模組</li>
+                    <li>128-layer attention mechanism</li>
+                    <li>Residual connection structure</li>
+                    <li>Geometric feature extraction module</li>
                 </ul>
             </div>
             <div class="training-image">
                 <img src="{{ url_for('static', filename='images/CNN.png') }}" 
-                     alt="模型架構圖" 
+                     alt="Model architecture diagram" 
                      loading="lazy">
             </div>
         </div>
 
-        <!-- 橫向圖文區塊 3 -->
-        <!-- 橫向圖文區塊 1 -->
         <div class="training-card">
             <div class="training-text">
-                <h3>1. 數據預處理</h3>
-                <p>使用AlphaFold數據集進行特徵工程，包含：</p>
+                <h3>3. Data Preprocessing</h3>
+                <p>Feature engineering with AlphaFold dataset, including:</p>
                 <ul>
-                    <li>蛋白質序列正規化</li>
-                    <li>3D結構網格化</li>
-                    <li>進化資訊嵌入</li>
+                    <li>Protein sequence normalization</li>
+                    <li>3D structure grid mapping</li>
+                    <li>Embedding of evolutionary information</li>
                 </ul>
             </div>
             <div class="training-image">
                 <img src="{{ url_for('static', filename='images/KNNSVM.png') }}" 
-                     alt="數據預處理流程圖" 
+                     alt="Data preprocessing flowchart" 
                      loading="lazy">
             </div>
         </div>
@@ -247,20 +222,16 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 輸入方式切換
     const tabs = document.querySelectorAll('.input-method-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // 移除所有active類
             document.querySelectorAll('.input-method-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.input-method-content').forEach(c => c.classList.remove('active'));
             
-            // 添加active類到當前選中的標籤和內容
             const target = this.getAttribute('data-target');
             this.classList.add('active');
             document.getElementById(target).classList.add('active');
             
-            // 根據選中的輸入方式設置表單字段的required屬性
             if (target === 'fasta-upload') {
                 document.getElementById('fasta-file').required = true;
                 document.getElementById('sequence-input').required = false;
