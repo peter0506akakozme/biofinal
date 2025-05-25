@@ -9,6 +9,8 @@ from Bio import SeqIO
 import joblib
 from utils import extract_aac_features  # 請換成你的實際模組
 import hashlib
+import subprocess
+import tempfile
 
 # 載入環境變數
 load_dotenv()
@@ -141,6 +143,23 @@ def generate_csv(protein_id, protein_data):
     
     return output.getvalue()
 
+def generate_weblogo_image(sequence, output_path):
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_fasta:
+        temp_fasta.write(">sequence\n")
+        temp_fasta.write(sequence + "\n")
+        temp_fasta_path = temp_fasta.name
+
+    # 使用 weblogo CLI 產生 PNG
+    with open(output_path, "wb") as out_img, open(temp_fasta_path, "rb") as in_fasta:
+        subprocess.run(
+            ["weblogo", "--format", "PNG"],
+            stdin=in_fasta,
+            stdout=out_img,
+            check=True
+        )
+
+    os.remove(temp_fasta_path)
+
 @app.route('/download_csv/<protein_id>')
 def download_csv(protein_id):
     """下載CSV文件的路由"""
@@ -156,51 +175,58 @@ def download_csv(protein_id):
 
 @app.route('/send_email', methods=['POST'])
 def send_email():
-    """發送郵件的路由"""
     try:
         data = request.json
         protein_id = data.get('protein_id')
         email = data.get('email')
         
-        # 驗證輸入
         if not protein_id or not email:
             return jsonify({'status': 'error', 'message': '缺少 protein_id 或 email'}), 400
             
         if protein_id not in protein_db:
             return jsonify({'status': 'error', 'message': '找不到指定的蛋白質'}), 404
-            
-        # 生成CSV
+
+        # 生成 CSV
         csv_data = generate_csv(protein_id, protein_db[protein_id])
-        
-        # 創建郵件
+
+        # 產生 WebLogo 圖檔
+        sequence = protein_db[protein_id]["sequence"]
+        logo_path = f"{protein_id}_weblogo.png"
+        generate_weblogo_image(sequence, logo_path)
+
+        # 建立郵件
         msg = Message(
-            subject=f"ProteinExplorer 分析結果 - {protein_id}",
+            subject=f"ProteinExplorer Result - {protein_id}",
             sender=app.config['MAIL_DEFAULT_SENDER'],
             recipients=[email],
-            body=f"附件是蛋白質 {protein_id} 的分析結果。\n\n此郵件由 ProteinExplorer 系統自動發送。"
+            body=f"Attached is your analysis result and WebLogo image for {protein_id}."
         )
-        
-        # 附加CSV文件
+
+        # 附加 CSV
         msg.attach(
             filename=f"{protein_id}_analysis.csv",
             content_type="text/csv",
             data=csv_data
         )
-        
-        # 發送郵件
+
+        # 附加 WebLogo 圖
+        with open(logo_path, "rb") as f:
+            msg.attach(
+                filename=logo_path,
+                content_type="image/png",
+                data=f.read()
+            )
+
+        os.remove(logo_path)
+
+        # 寄送郵件
         mail.send(msg)
-        
-        return jsonify({
-            'status': 'success', 
-            'message': '郵件已成功發送'
-        })
-        
+
+        return jsonify({'status': 'success', 'message': '郵件已成功發送！'})
+
     except Exception as e:
         app.logger.error(f"郵件發送錯誤: {str(e)}", exc_info=True)
-        return jsonify({
-            'status': 'error', 
-            'message': f'郵件發送失敗: {str(e)}'
-        }), 500
+        return jsonify({'status': 'error', 'message': f'郵件發送失敗: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
